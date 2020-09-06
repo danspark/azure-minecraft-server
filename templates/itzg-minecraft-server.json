@@ -1,19 +1,35 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {},
+  "parameters": {
+    "serverName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of your minecraft server. Must be unique within Azure"
+      }
+    },
+    "minecraftVersion": {
+      "type": "string",
+      "defaultValue": "1.16.2",
+      "metadata": {
+        "description": "The version that'll be used by your server"
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the storage account that'll be used to store the server files. Must be unique within Azure and contain no special characters"
+      }
+    }
+  },
   "variables": {
-    "minecraftVersion": "1.16.2",
-    "shareName": "server",
-    "storageAccountName": "myservertest",
-    "serverName": "myservertest",
-    "dnsNameLabel": "myservertest"
+    "shareName": "server"
   },
   "resources": [
     {
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2018-07-01",
-      "name": "[variables('storageAccountName')]",
+      "name": "[parameters('storageAccountName')]",
       "location": "[resourceGroup().location]",
       "kind": "StorageV2",
       "sku": {
@@ -27,24 +43,24 @@
     {
       "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
       "apiVersion": "2019-04-01",
-      "name": "[concat(variables('storageAccountName'), '/default/', variables('shareName'))]",
+      "name": "[concat(parameters('storageAccountName'), '/default/', variables('shareName'))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
       ]
     },
     {
       "type": "Microsoft.ContainerInstance/containerGroups",
-      "name": "[variables('serverName')]",
+      "name": "[parameters('serverName')]",
       "apiVersion": "2018-10-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
         "[variables('shareName')]"
       ],
       "properties": {
         "containers": [
           {
-            "name": "[variables('serverName')]",
+            "name": "[parameters('serverName')]",
             "properties": {
               "image": "itzg/minecraft-server",
               "ports": [
@@ -64,7 +80,7 @@
                 },
                 {
                   "name": "VERSION",
-                  "value": "[variables('minecraftVersion')]"
+                  "value": "[parameters('minecraftVersion')]"
                 }
               ],
               "resources": {
@@ -96,7 +112,7 @@
             }
           ],
           "type": "Public",
-          "dnsNameLabel": "[variables('dnsNameLabel')]"
+          "dnsNameLabel": "[parameters('serverName')]"
         },
         "osType": "Linux",
         "volumes": [
@@ -104,8 +120,8 @@
             "name": "azurefile",
             "azureFile": {
               "shareName": "[variables('shareName')]",
-              "storageAccountName": "[variables('storageAccountName')]",
-              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+              "storageAccountName": "[parameters('storageAccountName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
             }
           }
         ]
