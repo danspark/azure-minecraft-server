@@ -6,7 +6,7 @@ A simple ARM template to quickly setup a minecraft server on azure
 
 ## What does it create
 
-- One storage account with a file share to storage the server files
+- One storage account with a file share to store the server files
 - One azure container instance with the [itzg/minecraft-server](https://hub.docker.com/r/itzg/minecraft-server) image
 
 ## How to use
