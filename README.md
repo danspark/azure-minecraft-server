@@ -15,3 +15,17 @@ A simple ARM template to quickly setup a minecraft server on azure
 2. Sign in with your Azure account.
 3. Select your subscription and resource group to deploy, the resources will be created on the resource group's region. If you're creating a new resource group, you'll have to select a region, select the region closest to your location.
 4. Click Review + Create, then Create. Your server will be created shortly.
+
+## Roadmap
+
+- [ ] OP (Administrators) support
+- [ ] All environment variables support
+- [ ] Friendly user interface to select version, cpu/memory and administrators
+
+## Contributing
+
+Feel free to open a pull request adding whatever feature you'd like to see here, I'll be glad to review it!
+
+If you feel like donating, I'd be forever thankful!
+
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=ZZYJ94ADD9VLW&currency_code=BRL&source=url)
