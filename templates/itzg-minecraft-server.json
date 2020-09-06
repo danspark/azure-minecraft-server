@@ -1,0 +1,115 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {},
+  "variables": {
+    "minecraftVersion": "1.16.2",
+    "shareName": "server",
+    "storageAccountName": "myservertest",
+    "serverName": "myservertest",
+    "dnsNameLabel": "myservertest"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2018-07-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[resourceGroup().location]",
+      "kind": "StorageV2",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "properties": {
+        "accessTier": "Hot"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2019-04-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('shareName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "name": "[variables('serverName')]",
+      "apiVersion": "2018-10-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]",
+        "[variables('shareName')]"
+      ],
+      "properties": {
+        "containers": [
+          {
+            "name": "[variables('serverName')]",
+            "properties": {
+              "image": "itzg/minecraft-server",
+              "ports": [
+                {
+                  "protocol": "TCP",
+                  "port": 80
+                },
+                {
+                  "protocol": "TCP",
+                  "port": 25565
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "EULA",
+                  "value": "true"
+                },
+                {
+                  "name": "VERSION",
+                  "value": "[variables('minecraftVersion')]"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "memoryInGB": 1.5,
+                  "cpu": 1
+                }
+              },
+              "volumeMounts": [
+                {
+                  "name": "azurefile",
+                  "mountPath": "/data"
+                }
+              ]
+            }
+          }
+        ],
+        "initContainers": [],
+        "restartPolicy": "OnFailure",
+        "ipAddress": {
+          "ports": [
+            {
+              "protocol": "TCP",
+              "port": 80
+            },
+            {
+              "protocol": "TCP",
+              "port": 25565
+            }
+          ],
+          "type": "Public",
+          "dnsNameLabel": "[variables('dnsNameLabel')]"
+        },
+        "osType": "Linux",
+        "volumes": [
+          {
+            "name": "azurefile",
+            "azureFile": {
+              "shareName": "[variables('shareName')]",
+              "storageAccountName": "[variables('storageAccountName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).keys[0].value]"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
