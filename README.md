@@ -1,4 +1,4 @@
-# azure-minecraft-server
+# Azure Minecraft Server
 
 A simple ARM template to quickly setup a minecraft server on azure
 
