@@ -15,6 +15,12 @@
         "description": "The version that'll be used by your server"
       }
     },
+    "serverOperators": {
+      "type": "string",
+      "metadata": {
+        "description": "The server operators usernames, comma-separated."
+      }
+    },
     "storageAccountName": {
       "type": "string",
       "metadata": {
@@ -81,6 +87,10 @@
                 {
                   "name": "VERSION",
                   "value": "[parameters('minecraftVersion')]"
+                },
+                {
+                  "name": "OPS",
+                  "value": "[parameters('serverOperators')]"
                 }
               ],
               "resources": {

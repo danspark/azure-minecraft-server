@@ -18,7 +18,7 @@ A simple ARM template to quickly setup a minecraft server on azure
 
 ## Roadmap
 
-- [ ] OP (Administrators) support
+- [x] OP (Administrators) support
 - [ ] All environment variables support
 - [ ] Friendly user interface to select version, cpu/memory and administrators
 
