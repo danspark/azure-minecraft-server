@@ -1,14 +1,8 @@
-____________
-## **Forked:** Added environment variable support  
-*see branch [packwiz](https://github.com/GeoDerp/azure-minecraft-server/tree/packwiz) or [modrinth](https://github.com/GeoDerp/azure-minecraft-server/tree/modrinth) branch for their versions*
-____________
-<br>
-
 # Azure Minecraft Server
 
 A simple ARM template to quickly setup a minecraft server on azure
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FGeoDerp%2Fazure-minecraft-server%2FVanilla%2Ftemplates%2Fitzg-minecraft-server.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdanspark%2Fazure-minecraft-server%2Fmaster%2Ftemplates%2Fitzg-minecraft-server.json)
 
 ## What does it create
 
