@@ -8,6 +8,17 @@
         "description": "The name of your minecraft server. Must be unique within Azure"
       }
     },
+    "EULA": {
+      "type": "string",
+      "defaultValue": "false",
+      "metadata": {
+        "description": "Do you accept the Mojang/Microsoft EULA"
+      },
+      "allowedValues": [
+        "true",
+        "false"
+      ]  
+    },
     "minecraftVersion": {
       "type": "string",
       "defaultValue": "1.16.2",
@@ -15,14 +26,55 @@
         "description": "The version that'll be used by your server"
       }
     },
+    "containerImage": {
+      "type": "string",
+      "defaultValue": "latest",
+      "metadata": {
+        "description": "The Container Tag (Ex. java17-alpine)"
+      }
+    },
     "serverOperators": {
       "type": "string",
       "metadata": {
-        "description": "The server operators usernames, comma-separated."
+        "description": "The server operator usernames (comma separated)"
+      }
+    },
+    "containerRestartPolicy": {
+      "type": "string",
+      "metadata": {
+        "description": "Restart Policy of Azure container"
+      },
+      "defaultValue": "OnFailure",
+      "allowedValues": [
+        "Always",
+        "Never",
+        "OnFailure"
+      ]  
+    },
+    "serverMemory": {
+      "type": "string",
+      "defaultValue": "1.5",
+      "metadata": {
+        "description": "Max Memory"
+      }
+    },
+    "serverCPU": {
+      "type": "string",
+      "defaultValue": "1",
+      "metadata": {
+        "description": "vCPU's"
+      }
+    },
+    "McPort": {
+      "type": "int",
+      "defaultValue": 25565,
+      "metadata": {
+        "description": "Port you will like mc to run on"
       }
     },
     "storageAccountName": {
       "type": "string",
+      "defaultValue": "[concat('mcstorage', uniqueString(resourceGroup().id))]",
       "metadata": {
         "description": "The name of the storage account that'll be used to store the server files. Must be unique within Azure and contain no special characters"
       }
@@ -68,35 +120,43 @@
           {
             "name": "[parameters('serverName')]",
             "properties": {
-              "image": "itzg/minecraft-server",
+              "image": "[concat('itzg/minecraft-server:', parameters('containerImage'))]",
               "ports": [
                 {
                   "protocol": "TCP",
-                  "port": 80
-                },
-                {
-                  "protocol": "TCP",
-                  "port": 25565
+                  "port": "[parameters('McPort')]"
                 }
               ],
               "environmentVariables": [
                 {
                   "name": "EULA",
-                  "value": "true"
+                  "value": "[parameters('EULA')]"
                 },
-                {
+                    {
                   "name": "VERSION",
                   "value": "[parameters('minecraftVersion')]"
                 },
                 {
                   "name": "OPS",
                   "value": "[parameters('serverOperators')]"
+                },
+                {
+                  "name": "MEMORY",
+                  "value": ""
+                },
+                {
+                  "name": "JVM_XX_OPTS",
+                  "value": "-XX:MaxRAMPercentage=75"
+                },
+                {
+                  "name": "SERVER_PORT",
+                  "value": "[parameters('McPort')]"
                 }
               ],
               "resources": {
                 "requests": {
-                  "memoryInGB": 1.5,
-                  "cpu": 1
+                  "memoryInGB": "[parameters('serverMemory')]",
+                  "cpu": "[parameters('serverCPU')]"
                 }
               },
               "volumeMounts": [
@@ -109,16 +169,12 @@
           }
         ],
         "initContainers": [],
-        "restartPolicy": "OnFailure",
+        "restartPolicy": "[parameters('containerRestartPolicy')]",
         "ipAddress": {
           "ports": [
             {
               "protocol": "TCP",
-              "port": 80
-            },
-            {
-              "protocol": "TCP",
-              "port": 25565
+              "port": "[parameters('MCport')]"
             }
           ],
           "type": "Public",
