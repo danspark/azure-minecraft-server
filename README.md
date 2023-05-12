@@ -1,5 +1,6 @@
 ____________
-## **Forked:** Added support for Packwiz modpacks 
+## **Forked:** Added environment variable support  
+*see branch [packwiz](https://github.com/GeoDerp/azure-minecraft-server/tree/packwiz) or [modrinth](https://github.com/GeoDerp/azure-minecraft-server/tree/modrinth) branch for their versions*
 ____________
 <br>
 
@@ -7,7 +8,7 @@ ____________
 
 A simple ARM template to quickly setup a minecraft server on azure
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FGeoDerp%2Fazure-minecraft-server%2Fpackwiz%2Ftemplates%2Fitzg-minecraft-server.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FGeoDerp%2Fazure-minecraft-server%2FVanilla%2Ftemplates%2Fitzg-minecraft-server.json)
 
 ## What does it create
 
@@ -24,7 +25,7 @@ A simple ARM template to quickly setup a minecraft server on azure
 ## Roadmap
 
 - [x] OP (Administrators) support
-- [ ] All environment variables support
+- [x] All environment variables support
 - [ ] Friendly user interface to select version, cpu/memory and administrators
 
 ## Contributing

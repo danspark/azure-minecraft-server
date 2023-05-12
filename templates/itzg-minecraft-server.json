@@ -39,25 +39,6 @@
         "description": "The server operator usernames (comma separated)"
       }
     },
-    "serverType": {
-      "type": "string",
-      "metadata": {
-        "description": "Type of Modpack"
-      },
-      "defaultValue": "FABRIC",
-      "allowedValues": [
-        "FABRIC",
-        "FORGE",
-        "QUILT"
-      ]  
-    },
-    "serverPackwiz": {
-      "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/USER/REPO/VERSION/pack.toml",
-      "metadata": {
-        "description": "json file url for packwiz"
-      }
-    },
     "containerRestartPolicy": {
       "type": "string",
       "metadata": {
@@ -72,14 +53,14 @@
     },
     "serverMemory": {
       "type": "int",
-      "defaultValue": 6,
+      "defaultValue": 1.5,
       "metadata": {
         "description": "Max Memory"
       }
     },
     "serverCPU": {
       "type": "int",
-      "defaultValue": 2,
+      "defaultValue": 1,
       "metadata": {
         "description": "vCPU's"
       }
@@ -158,14 +139,6 @@
                 {
                   "name": "OPS",
                   "value": "[parameters('serverOperators')]"
-                },
-                {
-                  "name": "TYPE",
-                  "value": "[parameters('serverType')]"
-                },
-                {
-                  "name": "PACKWIZ_URL",
-                  "value": "[parameters('serverPackwiz')]"
                 },
                 {
                   "name": "MEMORY",
