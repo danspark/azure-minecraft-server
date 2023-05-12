@@ -8,6 +8,17 @@
         "description": "The name of your minecraft server. Must be unique within Azure"
       }
     },
+    "EULA": {
+      "type": "string",
+      "defaultValue": "false",
+      "metadata": {
+        "description": "do you accept the Mojang/Microsoft EULA"
+      },
+      "allowedValues": [
+        "true",
+        "false"
+      ]  
+    },
     "minecraftVersion": {
       "type": "string",
       "defaultValue": "1.16.2",
@@ -15,10 +26,71 @@
         "description": "The version that'll be used by your server"
       }
     },
+    "containerImage": {
+      "type": "string",
+      "defaultValue": "java17-alpine",
+      "metadata": {
+        "description": "The Container Tag (Ex. latest)"
+      }
+    },
     "serverOperators": {
+      "type": "array",
+      "minLength": 0,
+      "maxLength": 100,
+      "metadata": {
+        "description": "The server operators usernames"
+      }
+    },
+    "serverType": {
       "type": "string",
       "metadata": {
-        "description": "The server operators usernames, comma-separated."
+        "description": "Type of Modpack"
+      },
+      "defaultValue": "FABRIC",
+      "allowedValues": [
+        "FABRIC",
+        "FORGE",
+        "QUILT"
+      ]  
+    },
+    "serverPackwiz": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/USER/REPO/VERSION/pack.toml",
+      "metadata": {
+        "description": "json url for packwiz"
+      }
+    },
+    "containerRestartPolicy": {
+      "type": "string",
+      "metadata": {
+        "description": "Restart Policy of Azure container"
+      },
+      "defaultValue": "OnFailure",
+      "allowedValues": [
+        "Always",
+        "Never",
+        "OnFailure"
+      ]  
+    },
+    "serverMemory": {
+      "type": "int",
+      "defaultValue": 6,
+      "metadata": {
+        "description": "Max Memory"
+      }
+    },
+    "serverCPU": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "vCPU's"
+      }
+    },
+    "MCport": {
+      "type": "int",
+      "defaultValue": 25565,
+      "metadata": {
+        "description": "port you will like mc to run on"
       }
     },
     "storageAccountName": {
@@ -61,42 +133,58 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-        "[variables('shareName')]"
+        "[variables('shareName')]", "[parameters('EULA'))]", "[parameters('containerRestartPolicy'))]", "[parameters('serverMemory'))]", "[parameters('serverCPU'))]", "[parameters('MCport'))]"
       ],
       "properties": {
         "containers": [
           {
             "name": "[parameters('serverName')]",
             "properties": {
-              "image": "itzg/minecraft-server",
+              "image": "[concat('itzg/minecraft-server:', parameters('containerImage'))]",
               "ports": [
                 {
                   "protocol": "TCP",
-                  "port": 80
-                },
-                {
-                  "protocol": "TCP",
-                  "port": 25565
+                  "port": "[parameters('MCport')]"
                 }
               ],
               "environmentVariables": [
                 {
                   "name": "EULA",
-                  "value": "true"
+                  "value": "[parameters('EULA')]"
                 },
-                {
+                    {
                   "name": "VERSION",
                   "value": "[parameters('minecraftVersion')]"
                 },
                 {
                   "name": "OPS",
-                  "value": "[parameters('serverOperators')]"
+                  "value": "[join(parameters('containerImage'), ',')]"
+                },
+                {
+                  "name": "TYPE",
+                  "value": "[parameters('serverType')]"
+                },
+                {
+                  "name": "PACKWIZ_URL",
+                  "value": "[parameters('serverPackwiz')]"
+                },
+                {
+                  "name": "MEMORY",
+                  "value": ""
+                },
+                {
+                  "name": "JVM_XX_OPTS",
+                  "value": "-XX:MaxRAMPercentage=75"
+                },
+                {
+                  "name": "SERVER_PORT",
+                  "value": "[parameters('MCport')]"
                 }
               ],
               "resources": {
                 "requests": {
-                  "memoryInGB": 1.5,
-                  "cpu": 1
+                  "memoryInGB": "[parameters('serverMemory')]",
+                  "cpu": "[parameters('serverCPU')]"
                 }
               },
               "volumeMounts": [
@@ -109,16 +197,12 @@
           }
         ],
         "initContainers": [],
-        "restartPolicy": "OnFailure",
+        "restartPolicy": "[parameters('containerRestartPolicy')]",
         "ipAddress": {
           "ports": [
             {
               "protocol": "TCP",
-              "port": 80
-            },
-            {
-              "protocol": "TCP",
-              "port": 25565
+              "port": "[parameters('MCport')]"
             }
           ],
           "type": "Public",
