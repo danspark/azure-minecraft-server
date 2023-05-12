@@ -12,7 +12,7 @@
       "type": "string",
       "defaultValue": "false",
       "metadata": {
-        "description": "do you accept the Mojang/Microsoft EULA"
+        "description": "Do you accept the Mojang/Microsoft EULA"
       },
       "allowedValues": [
         "true",
@@ -28,15 +28,15 @@
     },
     "containerImage": {
       "type": "string",
-      "defaultValue": "java17-alpine",
+      "defaultValue": "latest",
       "metadata": {
-        "description": "The Container Tag (Ex. latest)"
+        "description": "The Container Tag (Ex. java17-alpine)"
       }
     },
     "serverOperators": {
       "type": "string",
       "metadata": {
-        "description": "The server operators usernames (comma separated)"
+        "description": "The server operator usernames (comma separated)"
       }
     },
     "serverType": {
@@ -55,7 +55,7 @@
       "type": "string",
       "defaultValue": "https://raw.githubusercontent.com/USER/REPO/VERSION/pack.toml",
       "metadata": {
-        "description": "json url for packwiz"
+        "description": "json file url for packwiz"
       }
     },
     "containerRestartPolicy": {
@@ -88,7 +88,7 @@
       "type": "int",
       "defaultValue": 25565,
       "metadata": {
-        "description": "port you will like mc to run on"
+        "description": "Port you will like mc to run on"
       }
     },
     "storageAccountName": {
