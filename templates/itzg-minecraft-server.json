@@ -53,7 +53,7 @@
     },
     "serverMemory": {
       "type": "int",
-      "defaultValue": 1.5,
+      "defaultValue": 2,
       "metadata": {
         "description": "Max Memory"
       }
